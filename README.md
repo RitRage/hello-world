@@ -1,2 +1,2 @@
 # hello-world
-first repository, not the last one.
+first repository. not the last one.
