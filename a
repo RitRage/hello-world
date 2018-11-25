@@ -1,0 +1,84 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int vis[100][100];
+int visi[100];
+int fin[100];
+int fini=0;
+int finn[100];
+int finni = 0;
+
+struct node {
+    int v;
+    struct node* next;
+};
+
+struct nodeArray {
+    struct node* head;
+};
+
+struct graph {
+    int S;
+    struct nodeArray* array;
+};
+
+struct graph* initializeGraph(int n) {
+    struct graph* g = (struct graph*) malloc(sizeof(struct graph));
+    g->S = n;
+    g->array = (struct nodeArray*) malloc(n*sizeof(struct nodeArray));
+    for(int i =0; i<n; i++) {
+        g->array[i].head = NULL;
+    }
+    return g;
+}
+
+void addEdge(struct graph* g, int j, int k) {
+    struct node* a = (struct node*) malloc(sizeof(struct node));
+    a->v = k;
+    a->next = g->array[j].head;
+    g->array[j].head = a;
+    
+    struct node* b = (struct node*) malloc(sizeof(struct node));
+    b->v = j;
+    b->next = g->array[k].head;
+    g->array[k].head = b;
+}
+
+void traverse(struct graph* g, int j, int k) {
+    visi[j] = 1;
+    struct node* temp = g->array[j].head;
+    while(temp) {
+        if(vis[j][temp->v]==0) {
+            vis[j][temp->v]=1;
+            vis[temp->v][j] = 1;
+            traverse(g,temp->v,k);
+            fin[fini++] = j;
+            finn[finni++] = temp->v;
+        }
+        temp = temp->next;
+    }
+}
+
+int main()
+{
+    int n,m;
+    scanf("%d%d",&n,&m);
+    struct graph* g = initializeGraph(n);
+    for(int i = 0; i<m; i++) {
+        int j,k;
+        scanf("%d%d",&j,&k);
+        addEdge(g,j,k);
+    }
+    
+    traverse(g,0,n);
+    for(int i = 0; i<n; i++) {
+        if(visi[i]==0) { 
+            printf("-1");
+            return 0;
+        }
+    }
+    for(int i = fini-1; i>=0; i--) {
+        printf("%d->%d\n",fin[i],finn[i]);
+    }
+    return 0;
+}
